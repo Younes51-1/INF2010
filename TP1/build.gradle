@@ -1,0 +1,33 @@
+plugins {
+    id 'java'
+    id "de.undercouch.download" version "4.1.1"
+    id "org.jetbrains.gradle.plugin.idea-ext" version "0.10"
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation group: 'org.ejml', name: 'ejml-all', version: '0.40'
+    implementation group: 'net.sourceforge.tess4j', name: 'tess4j', version: '4.5.1'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+}
+
+task downloadFile(type: Download) {
+    src 'https://github.com/tesseract-ocr/tessdata/raw/main/fra.traineddata'
+    dest projectDir
+    overwrite false
+}
+
+idea.project.settings {
+    taskTriggers {
+        afterSync tasks.getByName("downloadFile")
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
